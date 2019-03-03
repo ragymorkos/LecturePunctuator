@@ -56,34 +56,55 @@ def fix_srt_overlap(filename):
         millisecond = duration / 1000000
         return "%02d:%02d:%02d,%03d" % (hour, minute, second, millisecond)
 
-    def readOneSubtitle(scanner):
-        # read idx
-        idx = scanner.readline().strip()
-        if not idx:
-            return None
-        idx = int(idx)
+    def readOneSubtitle(i, inputt):
+        if i >= len(inputt):
+            return i, None
 
+        # read idx
+        idx = inputt[i]
+        i += 1
+        if not idx:
+            return i, None
+        idx = int(idx)
+        
         # read timing
-        timing = scanner.readline().strip()
+        if i >= len(inputt):
+            return None
+        timing = inputt[i]
+        i += 1
         timing = timeFramePattern.findall(timing)
         if not timing:
-            return None
+            return i, None
         timing = timing[0]
         fromTime = getDuration(timing[:4])
         toTime = getDuration(timing[4:])
 
         # read content
-        content = scanner.readline().strip()
+        j = i
+        while j < len(inputt):
+            if len(inputt[j]) == 0:
+                j += 1
+            else:
+                break
+        
+        if j >= len(inputt):
+            return i, None
+        if inputt[j].isdigit():
+            return readOneSubtitle(j, inputt)
+
+        content = inputt[i]
+        i += 1
         if not content:
             return None
         content += "\n"
-        while True:
-            scanned = scanner.readline().strip()
+        while i < len(inputt):
+            scanned = inputt[i]
+            i += 1
             if not scanned:
                 break
             content += scanned + "\n"
         
-        return Subtitle(idx, fromTime, toTime, content)
+        return i, Subtitle(idx, fromTime, toTime, content)
 
     def writeOneSubtitle(file, subtitle, idx):
         file.write(str(idx[0]) + "\n" + printDuration(subtitle.fromTime) + " --> " + printDuration(subtitle.toTime) + "\n" + subtitle.text + "\n\n")
@@ -108,13 +129,16 @@ def fix_srt_overlap(filename):
         filee.write(s)
     
     newFilePath = filename + ".fixed"
-    filee = open(filename, "r")
+    with open(filename, "r") as f:
+       inputt = f.readlines()
+    inputt = [x.strip() for x in inputt]
+
     newFile = open(newFilePath, "w")
     newIdx = [1]
     lastSubtitle = None
-
+    i = 0
     while True:
-        subtitle = readOneSubtitle(filee)
+        i, subtitle = readOneSubtitle(i, inputt)
         if lastSubtitle:
             if subtitle:
                 subtitle.text = subtitle.text.strip()
@@ -163,9 +187,7 @@ def convert_to_youtube(filename):
         for linee in f:
             line = linee.strip()
             if "-->" in line:
-                if line[3] != "0":
-                    s += line[3]
-                s += (line[4:8] + (" "))
+                s += line[:8] + " "
             elif line and not line.isdigit():
                 s += (line + "\n")
     os.system("rm \"" + filename + "\"")
@@ -177,9 +199,8 @@ def convert_to_youtube(filename):
 def remove_timecodes(timecoded_filename, nontimecoded_filename):
     with open(timecoded_filename, "r") as f_original, open(nontimecoded_filename, "w") as f:
         s = ""
-        for linee in f_original:
-            line = linee.strip()
-            s += line[5:] + " "
+        for line in f_original:
+            s += " ".join(line.strip().split()[1:]) + " "
         s = s.strip()
         f.write(s)
 
@@ -197,7 +218,16 @@ def restore_timings(timecoded_file, punctuated_filee):
             for i in range(1, len(original)):
                 if counter < len(punctuated):
                     if punctuated[counter] == "i":
-                        punctuated[counter] = "I"                        
+                        punctuated[counter] = "I"
+                    
+                    if counter + 2 < len(punctuated) and punctuated[counter + 1] == "I.":
+                        if punctuated[counter] == "and":
+                            punctuated[counter + 1] = "I"
+                            punctuated[counter + 2] = punctuated[counter + 2].lower()
+                        else:
+                            punctuated[counter] += "."
+                            punctuated[counter + 1] = "I"
+                                
                     punctuated[counter] = string.replace(punctuated[counter], "'S", "'s")
                     punctuated[counter] = string.replace(punctuated[counter], "'L", "'l")
                     punctuated[counter] = string.replace(punctuated[counter], "'R", "'r'")
