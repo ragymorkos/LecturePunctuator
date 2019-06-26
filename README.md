@@ -15,7 +15,7 @@ You can find the training data used in here: https://drive.google.com/drive/fold
 * Python 2.7+
 * pip (if it is not installed on your system, install with `sudo apt install python-pip`)
 * Theano (if it is not installed on your system, install with `sudo pip install Theano`)
-* youtube-dl (if it is not installed on your system, install with `sudo apt install youtube-dl`)
+* youtube-dl (if it is not installed on your system, install with `sudo pip install --upgrade youtube_dl`)
 * ffmpeg (if it is not installed on your system, install with `sudo apt install ffmpeg`)
 * The neural network file: download the file then place it in the root directory of the repository: https://drive.google.com/file/d/1AyBk8NHyOuf_JgKo0AUeZr_O0w9PJD2a
 
