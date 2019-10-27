@@ -268,7 +268,7 @@ if __name__ == "__main__":
     final_directory = make_new_directory("transcripts")
 
     # download subtitle/subtitles to temporary directory
-    os.system("youtube-dl --write-auto-sub --skip-download -o \"" + temp_directory + "/%(title)s_%(id)s.%(ext)s\" " + sys.argv[1])
+    os.system("youtube-dl --ignore-errors --write-auto-sub --skip-download -o \"" + temp_directory + "/%(title)s_%(id)s.%(ext)s\" " + sys.argv[1])
 
     for filename in os.listdir(temp_directory):
         full_filename = os.path.join(temp_directory, filename)
