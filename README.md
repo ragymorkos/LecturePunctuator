@@ -8,7 +8,7 @@ This repository contains a tool to provide automatic punctuation of lecture tran
 
 My work on this tool slightly builds upon that of https://github.com/ottokart/punctuator2, from which my repository is forked. I used the training structure in that repository to train a customized bidirectional recurrent neural network on manually punctuated transcripts scraped from Udacity's YouTube channel (https://www.youtube.com/user/Udacity) and from Princeton's COS 226 class (https://cuvids.io/app/course/2/). The training data that was used can be found in the "training_data" subdirectory inside the root of this repository. For more information and details regarding the background and methodology for training the neural network and regarding the project in general, including possible ways to improve the F-score, please refer to the "final_report.pdf" file in the root of the repository. Please note that some of the things in the report might be outdated or irrelevant to this repository's functionality.
 
-You can find the training data used in here: https://drive.google.com/drive/folders/1mmrD1Rk4xdeatwDv2zYe-TTjIR-Hor7V
+Please reach out to me for the training data used for this project.
 
 # Requirements (Ubuntu)
 
@@ -17,7 +17,7 @@ You can find the training data used in here: https://drive.google.com/drive/fold
 * Theano (if it is not installed on your system, install with `sudo pip install Theano`)
 * youtube-dl (if it is not installed on your system, install with `sudo pip install --upgrade youtube_dl`)
 * ffmpeg (if it is not installed on your system, install with `sudo apt install ffmpeg`)
-* The neural network file: download the file then place it in the root directory of the repository: https://drive.google.com/file/d/1AyBk8NHyOuf_JgKo0AUeZr_O0w9PJD2a
+* The neural network file: Please reach out to me if you'd like to use mine.
 
 I have not yet tested this repository on a non-Linux OS. Feel free to send me the installation instructions or put a pull request on the readme if you were to make it work on MacOS or Windows.
 
